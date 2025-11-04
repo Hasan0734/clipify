@@ -1,17 +1,24 @@
 import { AppSidebar } from "@/components/AppSidebar";
-import ClipboardList from "@/components/ClipboardList";
+import Clipboards from "@/components/Clipboards";
 import Navbar from "@/components/Navbar";
-import Header from "@/components/Navbar";
-import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
-import Image from "next/image";
+import SearchBar from "@/components/SearchBar";
+import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 
 export default function Home() {
   return (
     <SidebarProvider>
-      <AppSidebar />
-      <main className="w-full">
-         <Navbar />
-      </main>
+      <AppSidebar variant="inset" />
+      <SidebarInset>
+        <Navbar />
+        <div className="flex flex-1 flex-col">
+          <div className="@container/main flex flex-1 flex-col gap-2">
+            <div className="flex flex-col gap-4 py-4 md:gap-6 md:py-6">
+              <SearchBar />
+              <Clipboards />
+            </div>
+          </div>
+        </div>
+      </SidebarInset>
     </SidebarProvider>
   );
 }

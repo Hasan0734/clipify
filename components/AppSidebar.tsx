@@ -1,67 +1,83 @@
-"use client"
+"use client";
+import React from "react";
 import {
-    Sidebar,
-    SidebarContent,
-    SidebarFooter,
-    SidebarGroup,
-    SidebarGroupContent,
-    SidebarGroupLabel,
-    SidebarHeader,
-    SidebarMenu,
-    SidebarMenuButton,
-    SidebarMenuItem,
+  Sidebar,
+  SidebarContent,
+  SidebarGroup,
+  SidebarGroupContent,
+  SidebarGroupLabel,
+  SidebarHeader,
+  SidebarMenu,
+  SidebarMenuButton,
+  SidebarMenuItem,
 } from "@/components/ui/sidebar";
-import {FileText, Image, Link2, Star, Layers, Clipboard} from "lucide-react";
-import {useState} from "react";
+import { FileText, Image, Link2, Star, Layers, Clipboard } from "lucide-react";
+import { useState } from "react";
 
 const filters = [
-    {id: "all", label: "All Clips", icon: Layers},
-    {id: "text", label: "Text", icon: FileText},
-    {id: "images", label: "Images", icon: Image},
-    {id: "links", label: "Links", icon: Link2},
-    {id: "favorites", label: "Favorites", icon: Star},
+  { id: "all", label: "All Clips", icon: Layers, count: 212 },
+  { id: "text", label: "Text", icon: FileText, count: 33 },
+  { id: "images", label: "Images", icon: Image, count: 11 },
+  { id: "links", label: "Links", icon: Link2, count: 2 },
+  { id: "favorites", label: "Favorites", icon: Star, count: 4 },
 ];
 
-export function AppSidebar() {
+export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+  const [isActive, setIsActive] = useState("all");
 
-    const [isActive, setIsActive] = useState('all'
-    )
-    return (
-        <Sidebar>
-            <SidebarHeader>
-                <div className="flex items-center gap-3">
-                    <div className="p-2 rounded-xl shadow-lg">
-                        <Clipboard className="w-6 h-6 text-primary dark:text-white"/>
+  return (
+    <Sidebar collapsible="offcanvas" {...props}>
+      <SidebarHeader>
+        <div className="flex items-center gap-3">
+          <div className="p-2 rounded-xl shadow-lg">
+            <Clipboard className="w-6 h-6 text-primary dark:text-white" />
+          </div>
+          <div>
+            <h1 className="text-2xl font-bold dark:text-white text-primary">
+              Clipify
+            </h1>
+            {/*<p className="text-xs text-muted-foreground"></p>*/}
+          </div>
+        </div>
+      </SidebarHeader>
+      <SidebarContent>
+        <SidebarGroup>
+          <SidebarGroupLabel>Filters</SidebarGroupLabel>
+          <SidebarGroupContent>
+            <SidebarMenu>
+              {filters.map((item) => (
+                <SidebarMenuItem key={item.id}>
+                  <SidebarMenuButton
+                    size={"lg"}
+                    onClick={() => {
+                      setIsActive(item.id);
+                    }}
+                    isActive={isActive === item.id}
+                    className={"rounded-md  cursor-pointer w-full  h-10"}
+                  >
+                    {<item.icon />}
+                    <div className={"grow flex justify-between "}>
+                      {item.label}{" "}
+                      <span className={"font-semibold"}>{item.count}</span>
                     </div>
-                    <div>
-                        <h1 className="text-2xl font-bold dark:text-white text-primary">
-                            Clipify
-                        </h1>
-                        <p className="text-xs text-muted-foreground">Smart Clipboard Manager</p>
-                    </div>
-                </div>
-            </SidebarHeader>
-            <SidebarContent>
-                <SidebarGroup>
-                    <SidebarGroupLabel>Filters</SidebarGroupLabel>
-                    <SidebarGroupContent>
-                        <SidebarMenu>
-                            {filters.map(item => <SidebarMenuItem key={item.id}>
-                                <SidebarMenuButton
-                                    size={'lg'}
-                                    onClick={() => {
-                                        setIsActive(item.id
-                                        )
-                                    }}
-                                    isActive={isActive === item.id}
-                                    className={'rounded-[10px]  cursor-pointer'}>
-                                    {<item.icon/>} {item.label}
-                                </SidebarMenuButton>
-                            </SidebarMenuItem>)}
-                        </SidebarMenu>
-                    </SidebarGroupContent>
-                </SidebarGroup>
-            </SidebarContent>
-        </Sidebar>
-    );
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+              ))}
+            </SidebarMenu>
+          </SidebarGroupContent>
+        </SidebarGroup>
+
+        <SidebarGroup>
+          <SidebarGroupContent>
+            <div className="mt-8 p-4 rounded-xl bg-gradient-to-br from-primary/10 to-accent/10 border border-primary/20">
+              <p className="text-xs text-muted-foreground leading-relaxed">
+                Your clipboard history is stored locally and synced across
+                devices.
+              </p>
+            </div>
+          </SidebarGroupContent>
+        </SidebarGroup>
+      </SidebarContent>
+    </Sidebar>
+  );
 }
