@@ -24,15 +24,16 @@ const filters = [
 ];
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
-  const [isActive, setIsActive] = useState("all");
-  const {clipboards, handleFilter} = useClipboardStore((state) => state);
+  const { clipboards, allClipboards, filterType, handleFilter } = useClipboardStore(
+    (state) => state
+  );
 
   const itemCounts = {
-    all: clipboards.length,
-    text: clipboards.filter((item) => item.type === "text").length,
-    image: clipboards.filter((item) => item.type === "image").length,
-    link: clipboards.filter((item) => item.type === "link").length,
-    favorite: clipboards.filter((item) => item.isFavorite).length,
+    all: allClipboards.length,
+    text: allClipboards.filter((item) => item.type === "text").length,
+    image: allClipboards.filter((item) => item.type === "image").length,
+    link: allClipboards.filter((item) => item.type === "link").length,
+    favorite: allClipboards.filter((item) => item.isFavorite).length,
   };
 
   return (
@@ -57,7 +58,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
             <SidebarMenu>
               {filters.map((item) => {
                 const count = itemCounts[item.id as keyof typeof itemCounts];
-                const active = isActive === item.id;
+                const active = filterType === item.id;
 
                 return (
                   <SidebarMenuItem key={item.id}>
@@ -67,7 +68,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                         handleFilter(item.id);
                       }}
                       isActive={active}
-                      className={"rounded-md  cursor-pointer w-full  h-10"}
+                      className={"rounded-md  cursor-pointer w-full  h-9"}
                     >
                       {<item.icon />}
                       <div className={"grow flex justify-between "}>

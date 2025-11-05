@@ -5,3 +5,5 @@ export type ClipboardType = {
     timestamp:string,
     isFavorite: boolean
 }
+
+

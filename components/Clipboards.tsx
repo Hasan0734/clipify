@@ -1,7 +1,10 @@
 "use client";
-import React, { Suspense, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import ClipboardCard from "./ClipboardCard";
 import { useClipboardStore } from "@/store/clipboard-store";
+import { Button } from "./ui/button";
+import { Calendar, SortAsc } from "lucide-react";
+import SearchBar from "./SearchBar";
 
 const mockClipboardItems = [
   {
@@ -68,34 +71,59 @@ const mockClipboardItems = [
 const Clipboards = () => {
   const [clipboardText, setClipboardText] = useState("");
   const [clipboardItems, setClipboardItems] = useState(mockClipboardItems);
-    const clipboards = useClipboardStore(state => state.clipboards);
+  const clipboards = useClipboardStore((state) => state.clipboards);
+  const handleAddNew = useClipboardStore((state) => state.handleAddNew);
 
   useEffect(() => {
-    const interval = setInterval(async () => {
-      try {
-        const text = await navigator.clipboard.readText();
-        const image = await navigator.clipboard.read();
+    let interval: NodeJS.Timeout;
 
-        setClipboardText(text);
-      } catch (error) {
-        console.warn("Clipboard access denied:", error);
-      }
-    }, 2000);
-    return () => clearInterval(interval);
+    function startPolling() {
+      interval = setInterval(async () => {
+        try {
+          const text = await navigator.clipboard.readText();
+          if (text && text !== clipboardText) handleAddNew({content: text});
+        } catch {}
+      }, 2000);
+    }
+
+    function stopPolling() {
+      clearInterval(interval);
+    }
+
+    window.addEventListener("focus", startPolling);
+    window.addEventListener("blur", stopPolling);
+
+    startPolling();
+
+    return () => {
+      window.removeEventListener("focus", startPolling);
+      window.removeEventListener("blur", stopPolling);
+      clearInterval(interval);
+    };
   }, [clipboardText]);
-
-
-
-
-  
 
   return (
     <div className="px-4 lg:px-6">
-      <h2 className=" mb-4">3 items</h2>
-      <div className="*:data-[slot=card]:from-primary/5 *:data-[slot=card]:to-card dark:*:data-[slot=card]:bg-card grid grid-cols-1 gap-4 *:data-[slot=card]:bg-liner-to-t *:data-[slot=card]:shadow-xs @xl/main:grid-cols-2 @5xl/main:grid-cols-4 grid-rows-4">
-        {clipboards.map((item) => (
-          <ClipboardCard key={item.id} data={item} />
-        ))}
+      <div className="flex items-center justify-center  mb-10">
+        {/* <h2 className="">{clipboards.length} items</h2> */}
+
+        <div className="space-x-2 flex ">
+          <SearchBar />
+          <Button variant={"outline"}>
+            Sort by <SortAsc />
+          </Button>
+          <Button variant={"outline"}>
+            By Date <Calendar />
+          </Button>
+        </div>
+      </div>
+
+      <div className="*:data-[slot=card]:from-primary/5 *:data-[slot=card]:to-card dark:*:data-[slot=card]:bg-card grid grid-cols-1 gap-4 *:data-[slot=card]:bg-liner-to-t *:data-[slot=card]:shadow-xs @xl/main:grid-cols-2 @5xl/main:grid-cols-3 @7xl/main:grid-cols-4">
+        {clipboards.length > 0 ? (
+          clipboards.map((item) => <ClipboardCard key={item.id} data={item} />)
+        ) : (
+          <div>Not found any items</div>
+        )}
       </div>
     </div>
   );
