@@ -70,37 +70,48 @@ const mockClipboardItems = [
 
 const Clipboards = () => {
   const [clipboardText, setClipboardText] = useState("");
-  const clipboards = useClipboardStore((state) => state.clipboards);
-  const handleAddNew = useClipboardStore((state) => state.handleAddNew);
+  const { clipboards, handleAddNew, isMonitoring } = useClipboardStore(
+    (state) => state
+  );
 
-//   useEffect(() => {
-//     let interval: NodeJS.Timeout;
+  useEffect(() => {
+    let interval: NodeJS.Timeout;
 
-//     function startPolling() {
-//       interval = setInterval(async () => {
-//         try {
-//           const text = await navigator.clipboard.readText();
-//           if (text && text !== clipboardText) handleAddNew({content: text});
-//         } catch {}
-//       }, 2000);
-//     }
+    function startPolling() {
+      interval = setInterval(async () => {
+        try {
+          const text = await navigator.clipboard.readText();
+          console.log({ isMonitoring });
+          console.log({
+            check: text && text !== clipboardText && isMonitoring,
+          });
+          if (text && text !== clipboardText && isMonitoring) {
+            setClipboardText(text);
+            handleAddNew({ content: text });
+          }
+        } catch {}
+      }, 2000);
+    }
 
-//     function stopPolling() {
-//       clearInterval(interval);
-//     }
+    function stopPolling() {
+      clearInterval(interval);
+    }
 
-//     window.addEventListener("focus", startPolling);
-//     window.addEventListener("blur", stopPolling);
+    window.addEventListener("focus", startPolling);
+    window.addEventListener("blur", stopPolling);
 
-//     startPolling();
+    startPolling();
 
-//     return () => {
-//       window.removeEventListener("focus", startPolling);
-//       window.removeEventListener("blur", stopPolling);
-//       clearInterval(interval);
-//     };
-//   }, [clipboardText]);
+    return () => {
+      window.removeEventListener("focus", startPolling);
+      window.removeEventListener("blur", stopPolling);
+      clearInterval(interval);
+    };
+  }, [clipboardText, isMonitoring]);
 
+  const reversed = [...clipboards.reverse()];
+
+  console.log(reversed)
   return (
     <div className="px-4 lg:px-6">
       <div className="flex items-center justify-center  mb-10">
@@ -119,7 +130,7 @@ const Clipboards = () => {
 
       <div className="*:data-[slot=card]:from-primary/5 *:data-[slot=card]:to-card dark:*:data-[slot=card]:bg-card grid grid-cols-1 gap-4 *:data-[slot=card]:bg-liner-to-t *:data-[slot=card]:shadow-xs @xl/main:grid-cols-2 @5xl/main:grid-cols-3 @7xl/main:grid-cols-4">
         {clipboards.length > 0 ? (
-          clipboards.map((item) => <ClipboardCard key={item.id} data={item} />)
+          reversed.map((item) => <ClipboardCard key={item.id} data={item} />)
         ) : (
           <div>Not found any items</div>
         )}

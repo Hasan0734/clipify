@@ -18,7 +18,7 @@ import { useClipboardStore } from "@/store/clipboard-store";
 const filters = [
   { id: "all", label: "All Clips", icon: Layers, count: 212 },
   { id: "text", label: "Text", icon: FileText, count: 33 },
-  { id: "image", label: "Images", icon: Image, count: 11 },
+  // { id: "image", label: "Images", icon: Image, count: 11 },
   { id: "link", label: "Links", icon: Link2, count: 2 },
   { id: "favorite", label: "Favorites", icon: Star, count: 4 },
 ];
@@ -31,7 +31,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const itemCounts = {
     all: allClipboards.length,
     text: allClipboards.filter((item) => item.type === "text").length,
-    image: allClipboards.filter((item) => item.type === "image").length,
+    // image: allClipboards.filter((item) => item.type === "image").length,
     link: allClipboards.filter((item) => item.type === "link").length,
     favorite: allClipboards.filter((item) => item.isFavorite).length,
   };

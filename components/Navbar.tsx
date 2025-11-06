@@ -10,10 +10,11 @@ import { NewClipDialog } from "./NewClip";
 import { toast } from "sonner";
 
 const Navbar = () => {
-  const isMonitoring = true;
   const [open, setOpen] = useState(false);
 
-  const handleAddNew = useClipboardStore((state) => state.handleAddNew);
+  const { isMonitoring, handleMonitor, handleAddNew } = useClipboardStore(
+    (state) => state
+  );
 
   const handleCreateClip = (data: {
     content: string;
@@ -44,8 +45,8 @@ const Navbar = () => {
 
           <div className="ml-auto flex items-center gap-2">
             <Button
-              // onClick={onToggleMonitoring}
-              // variant={isMonitoring ? "default" : "outline"}
+              onClick={handleMonitor}
+              variant={isMonitoring ? "default" : "outline"}
               className="gap-2"
             >
               {isMonitoring ? (

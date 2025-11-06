@@ -1,6 +1,6 @@
 import { ClipboardType } from "@/lib/types";
 import { create } from "zustand";
-import { generateShortId } from "@/lib/utils";
+import { generateShortId, isLink } from "@/lib/utils";
 import { persist } from "zustand/middleware";
 import { toast } from "sonner";
 
@@ -9,12 +9,14 @@ type ClipboardStore = {
   allClipboards: ClipboardType[];
   filterType: string;
   searchQuery: string;
+  isMonitoring: boolean;
   toggleFavorite: (id: string) => void;
   handleFilter: (type: string) => void;
   handleSearch: (query: string) => void;
   handleAddNew: (newitem: Partial<ClipboardType> & { content: string }) => void;
   applyFilters: () => void;
   deleteClipboard: (id: string) => void;
+  handleMonitor: () => void;
 };
 
 export const useClipboardStore = create<ClipboardStore>()(
@@ -24,6 +26,7 @@ export const useClipboardStore = create<ClipboardStore>()(
       clipboards: [],
       filterType: "all",
       searchQuery: "",
+      isMonitoring: false,
 
       applyFilters: () => {
         const { allClipboards, filterType, searchQuery } = get();
@@ -61,6 +64,10 @@ export const useClipboardStore = create<ClipboardStore>()(
           isFavorite: data.isFavorite ?? false,
           ...data,
         };
+
+        if (isLink(data.content)) {
+          newItem.type = "link";
+        }
 
         const updated = [...allClipboards, newItem];
         set({ allClipboards: updated });
@@ -118,13 +125,19 @@ export const useClipboardStore = create<ClipboardStore>()(
 
         applyFilters();
       },
+
+      handleMonitor: () => {
+        set((state) => ({ isMonitoring: !state.isMonitoring }));
+      },
     }),
     {
       name: "clipboard-storage",
+
       partialize: (state) => ({
         allClipboards: state.allClipboards,
         clipboards: state.clipboards,
         filterType: state.filterType,
+        isMonitoring: state.isMonitoring,
       }),
     }
   )

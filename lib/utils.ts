@@ -10,7 +10,7 @@ export function cn(...inputs: ClassValue[]) {
 export function generateShortId() {
   return Math.random().toString(36).slice(2, 8);
 }
-
+const urlRegex = /^(https?:\/\/)?([\w-]+\.)+[\w-]{2,}(\/[^\s]*)?$/i;
 
 export const clipSchema = z
   .object({
@@ -40,3 +40,7 @@ export const clipSchema = z
       }
     }
   });
+
+export function isLink(text:string) {
+  return urlRegex.test(text.trim());
+}

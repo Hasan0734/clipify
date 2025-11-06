@@ -22,7 +22,7 @@ import { Button } from "./ui/button";
 import Image from "next/image";
 import { ClipboardType } from "@/lib/types";
 import { useClipboardStore } from "@/store/clipboard-store";
-import { formatDistance, subDays } from "date-fns";
+import { formatDistance } from "date-fns";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -32,11 +32,9 @@ import {
 import {
   Dialog,
   DialogContent,
-  DialogFooter,
   DialogTrigger,
 } from "./ui/dialog";
 
-type ClipType = "text" | "image" | "link";
 
 const typeIcons = {
   text: FileText,

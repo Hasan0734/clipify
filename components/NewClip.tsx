@@ -39,11 +39,11 @@ const items = [
     value: "text",
     icon: FileText,
   },
-  {
-    label: "Image",
-    value: "image",
-    icon: Image,
-  },
+//   {
+//     label: "Image",
+//     value: "image",
+//     icon: Image,
+//   },
   {
     label: "Link",
     value: "link",
